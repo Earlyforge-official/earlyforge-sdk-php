@@ -17,19 +17,11 @@ This is **not** a client for articles, briefs, or alerts — the public API
 never exposes those on any plan. Zero dependencies: uses `ext-curl`
 directly rather than pulling in an HTTP client library.
 
-Contract: [`docs/api/public-api-v1/openapi.yaml`](../../docs/api/public-api-v1/openapi.yaml).
+Full reference: [docs.earlyforge.ai/guides/api/php-sdk](https://docs.earlyforge.ai/guides/api/php-sdk). Source: [github.com/Earlyforge-official/earlyforge](https://github.com/Earlyforge-official/earlyforge/tree/main/sdk-php-earlyforge).
 
 ## Install
 
-Not published to Packagist yet — install from a clone of this repo:
-
-```bash
-git clone https://github.com/earlyforge/earlyforge.git
-composer config repositories.earlyforge-pulse-sdk path earlyforge/tools/sdk-php-earlyforge
-composer require earlyforge/pulse-sdk:@dev
-```
-
-(A published `composer require earlyforge/pulse-sdk` package is coming.)
+Not published to Packagist yet. Contact [support@earlyforge.ai](mailto:support@earlyforge.ai) for early access.
 
 ## Quickstart
 
