@@ -1,4 +1,4 @@
-# earlyforge/pulse-sdk
+# earlyforge/sdk
 
 PHP client for the **EarlyForge Trends API**, with two tiers under the
 same `/v1/api/trends/*` prefix:
