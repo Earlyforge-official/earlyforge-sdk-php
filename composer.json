@@ -1,5 +1,5 @@
 {
-  "name": "earlyforge/sdk",
+  "name": "earlyforge/earlyforge-sdk",
   "description": "PHP client for the EarlyForge Trends API (free Pulse mirror and paid full trends feed)",
   "type": "library",
   "license": "MIT",
