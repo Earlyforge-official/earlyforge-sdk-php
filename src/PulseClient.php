@@ -5,20 +5,24 @@ declare(strict_types=1);
 namespace EarlyForge\Pulse;
 
 /**
- * Client for the EarlyForge Pulse API — an authenticated mirror of the
- * free, anonymous trend data already shown on pulse.earlyforge.ai.
+ * Client for the EarlyForge Trends API.
  *
- * Covers the 4 Pulse endpoints only:
- *   - GET /v1/api/trends/top
- *   - GET /v1/api/trends/region/{region}
- *   - GET /v1/api/trends/category/{category}
- *   - GET /v1/api/trends/{trend_id}
+ * Covers 2 tiers under the same /v1/api/trends/* prefix:
+ *   - Pulse mirror (free, any plan):
+ *       GET /v1/api/trends/top
+ *       GET /v1/api/trends/region/{region}
+ *       GET /v1/api/trends/category/{category}
+ *       GET /v1/api/trends/{trend_id}
+ *   - Full trends feed (paid plans only — NOT "all trends unlocked", see
+ *     fullTrends()):
+ *       GET /v1/api/trends/full
+ *       GET /v1/api/trends/full/{trend_id}
  *
  * Contract: docs/api/public-api-v1/openapi.yaml (repo root). This client
  * never sends a parameter the OpenAPI spec doesn't document.
  *
  * Zero-dependency on purpose: uses ext-curl rather than pulling in an
- * HTTP client library for 4 GET endpoints.
+ * HTTP client library.
  */
 final class PulseClient
 {
@@ -96,6 +100,46 @@ final class PulseClient
     }
 
     /**
+     * Full trends feed — paid plans only, and NOT "all trends unlocked".
+     *
+     * Every plan still reveals only a daily, random, category-diversified
+     * budget of trend names (same budget the dashboard's Trends page shows
+     * for this org today). Items outside that budget stay in the list but
+     * with their name fields redacted (`name_locked: true`). A free-plan
+     * key throws PulseApiException with statusCode 402 before this even
+     * runs.
+     *
+     * @return array<string, mixed>
+     */
+    public function fullTrends(
+        ?string $region = null,
+        ?string $category = null,
+        int $page = 1,
+        int $limit = 20,
+    ): array {
+        return $this->get('/v1/api/trends/full', [
+            'region' => $region,
+            'category' => $category,
+            'page' => (string) $page,
+            'limit' => (string) $limit,
+        ]);
+    }
+
+    /**
+     * Full detail for one trend — paid plans only.
+     *
+     * Throws PulseApiException with statusCode 402 if the trend is outside
+     * today's visible-name budget — same restriction the dashboard's own
+     * detail panel enforces.
+     *
+     * @return array<string, mixed>
+     */
+    public function getFullTrend(string $trendId): array
+    {
+        return $this->get('/v1/api/trends/full/' . rawurlencode($trendId));
+    }
+
+    /**
      * @param array<string, string|null> $params
      * @return array<string, mixed>
      */
@@ -115,7 +159,8 @@ final class PulseClient
         if ($response['status'] >= 400) {
             $detail = null;
             $decoded = json_decode($response['body'], true);
-            if (is_array($decoded) && isset($decoded['detail']) && is_string($decoded['detail'])) {
+            if (is_array($decoded) && isset($decoded['detail'])
+                && (is_string($decoded['detail']) || is_array($decoded['detail']))) {
                 $detail = $decoded['detail'];
             }
             throw new PulseApiException(
