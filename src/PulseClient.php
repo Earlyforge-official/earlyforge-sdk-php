@@ -13,8 +13,8 @@ namespace EarlyForge\Pulse;
  *       GET /v1/api/trends/region/{region}
  *       GET /v1/api/trends/category/{category}
  *       GET /v1/api/trends/{trend_id}
- *   - Full trends feed (paid plans only — NOT "all trends unlocked", see
- *     fullTrends()):
+ *   - Full trends feed (every plan, including free — NOT "all trends
+ *     unlocked", see fullTrends()):
  *       GET /v1/api/trends/full
  *       GET /v1/api/trends/full/{trend_id}
  *
@@ -58,9 +58,9 @@ final class PulseClient
      *
      * @return array<string, mixed>
      */
-    public function topTrends(?string $date = null, ?string $locale = null): array
+    public function topTrends(?string $date = null): array
     {
-        return $this->get('/v1/api/trends/top', ['date' => $date, 'locale' => $locale]);
+        return $this->get('/v1/api/trends/top', ['date' => $date]);
     }
 
     /**
@@ -68,11 +68,10 @@ final class PulseClient
      *
      * @return array<string, mixed>
      */
-    public function trendsByRegion(string $region, ?string $date = null, ?string $locale = null): array
+    public function trendsByRegion(string $region, ?string $date = null): array
     {
         return $this->get('/v1/api/trends/region/' . rawurlencode($region), [
             'date' => $date,
-            'locale' => $locale,
         ]);
     }
 
@@ -81,11 +80,10 @@ final class PulseClient
      *
      * @return array<string, mixed>
      */
-    public function trendsByCategory(string $category, ?string $date = null, ?string $locale = null): array
+    public function trendsByCategory(string $category, ?string $date = null): array
     {
         return $this->get('/v1/api/trends/category/' . rawurlencode($category), [
             'date' => $date,
-            'locale' => $locale,
         ]);
     }
 
@@ -100,14 +98,14 @@ final class PulseClient
     }
 
     /**
-     * Full trends feed — paid plans only, and NOT "all trends unlocked".
+     * Full trends feed — every plan, including free, and NOT "all trends
+     * unlocked".
      *
      * Every plan still reveals only a daily, random, category-diversified
      * budget of trend names (same budget the dashboard's Trends page shows
-     * for this org today). Items outside that budget stay in the list but
-     * with their name fields redacted (`name_locked: true`). A free-plan
-     * key throws PulseApiException with statusCode 402 before this even
-     * runs.
+     * for this org today, bigger on paid plans). Items outside that budget
+     * stay in the list but with their name fields redacted
+     * (`name_locked: true`), not removed.
      *
      * @return array<string, mixed>
      */
@@ -126,7 +124,7 @@ final class PulseClient
     }
 
     /**
-     * Full detail for one trend — paid plans only.
+     * Full detail for one trend — every plan, including free.
      *
      * Throws PulseApiException with statusCode 402 if the trend is outside
      * today's visible-name budget — same restriction the dashboard's own
