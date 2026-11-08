@@ -18,13 +18,12 @@ final class PulseClientTest extends TestCase
             return ['status' => 200, 'body' => json_encode(['trends' => [], 'total' => 0])];
         });
 
-        $result = $client->topTrends(null, 'fr');
+        $result = $client->topTrends();
 
         self::assertSame(['trends' => [], 'total' => 0], $result);
         self::assertCount(1, $seen);
         self::assertContains('Authorization: Bearer ef_live_test', $seen[0]['headers']);
         self::assertStringStartsWith('https://api.test/v1/api/trends/top', $seen[0]['url']);
-        self::assertStringContainsString('locale=fr', $seen[0]['url']);
     }
 
     public function testTrendsByRegionBuildsPathSegment(): void
@@ -80,7 +79,7 @@ final class PulseClientTest extends TestCase
     {
         $client = new PulseClient('ef_live_test', 'https://api.test', function () {
             return ['status' => 402, 'body' => json_encode([
-                'detail' => ['error' => 'upgrade_required', 'upgrade_url' => '/settings/billing'],
+                'detail' => ['error' => 'quota_exceeded'],
             ])];
         });
 
@@ -89,7 +88,7 @@ final class PulseClientTest extends TestCase
             self::fail('Expected PulseApiException');
         } catch (PulseApiException $exception) {
             self::assertSame(402, $exception->getStatusCode());
-            self::assertSame('upgrade_required', $exception->getDetail()['error']);
+            self::assertSame('quota_exceeded', $exception->getDetail()['error']);
         }
     }
 

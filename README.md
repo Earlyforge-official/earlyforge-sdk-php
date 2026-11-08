@@ -7,11 +7,11 @@ same `/v1/api/trends/*` prefix:
   authenticated mirror of the free, anonymous trend data already shown on
   [pulse.earlyforge.ai](https://pulse.earlyforge.ai): same daily snapshot,
   same trend count, same fields.
-- **Full trends feed** — paid plans only, and **not "all trends
-  unlocked."** Every plan reveals a bigger, but still limited, daily,
-  random, category-diversified budget of trend names — exactly what your
-  organization's dashboard Trends page shows unlocked today, no more, no
-  less. See `fullTrends()` below.
+- **Full trends feed** — every plan, including free, and **not "all
+  trends unlocked."** Every plan reveals a daily, random,
+  category-diversified budget of trend names (bigger on paid plans) —
+  exactly what your organization's dashboard Trends page shows unlocked
+  today, no more, no less. See `fullTrends()` below.
 
 This is **not** a client for articles, briefs, or alerts — the public API
 never exposes those on any plan. Zero dependencies: uses `ext-curl`
@@ -30,7 +30,7 @@ use EarlyForge\Pulse\PulseClient;
 
 $client = new PulseClient('ef_live_xxxxxxxxxxxxxxxx');
 
-$snapshot = $client->topTrends(null, 'fr');
+$snapshot = $client->topTrends();
 echo $snapshot['trends'][0]['display_name'];
 ```
 
@@ -39,18 +39,18 @@ account works, Pulse access is free.
 
 ## Methods
 
-### `topTrends(?string $date = null, ?string $locale = null): array`
+### `topTrends(?string $date = null): array`
 
 Global top trends — same snapshot as the Pulse homepage. Returns
 `['trends' => [...], 'total' => int, 'cached_at' => string,
 'cache_ttl_seconds' => int]`.
 
-### `trendsByRegion(string $region, ?string $date = null, ?string $locale = null): array`
+### `trendsByRegion(string $region, ?string $date = null): array`
 
 Top trends for an ISO 3166-1 alpha-2 region code (e.g. `"US"`, `"FR"`).
 Same shape as `topTrends()`.
 
-### `trendsByCategory(string $category, ?string $date = null, ?string $locale = null): array`
+### `trendsByCategory(string $category, ?string $date = null): array`
 
 Top trends for a category (e.g. `"politics"`, `"tech"`). Same shape as
 `topTrends()`.
@@ -63,18 +63,16 @@ sources_count}` points.
 
 ### `fullTrends(?string $region = null, ?string $category = null, int $page = 1, int $limit = 20): array`
 
-**Paid plans only.** A bigger, paginated slice of the trend corpus than
-the fixed Pulse snapshot — gated by the same daily random name-visibility
-budget as the dashboard. Items outside today's budget stay in the list
-with their name fields redacted (`'name_locked' => true`), not removed.
+Every plan, including free. A bigger, paginated slice of the trend corpus
+than the fixed Pulse snapshot — gated by the same daily random
+name-visibility budget as the dashboard (bigger budget on paid plans).
+Items outside today's budget stay in the list with their name fields
+redacted (`'name_locked' => true`), not removed.
 Returns `['items' => [...], 'total' => int, 'page' => int, 'per_page' => int]`.
-
-A free-plan key throws `PulseApiException` with `getStatusCode() === 402`
-and `getDetail()['error'] === 'upgrade_required'` before this even runs.
 
 ### `getFullTrend(string $trendId): array`
 
-**Paid plans only.** Full detail for one trend — same TD-sourced fields
+Every plan, including free. Full detail for one trend — same TD-sourced fields
 as the dashboard's detail panel (`topsis_score`, `editorial_title`, etc.).
 Throws `PulseApiException` with `getStatusCode() === 402` and
 `getDetail()['code'] === 'trend_locked'` if the trend is outside today's
