@@ -1,6 +1,6 @@
 {
   "name": "earlyforge/earlyforge-sdk",
-  "description": "PHP client for the EarlyForge Trends API (free Pulse mirror and paid full trends feed)",
+  "description": "PHP client for the EarlyForge Trends API: emerging trends from the editorial intelligence platform (free Pulse mirror and full trends feed)",
   "type": "library",
   "license": "MIT",
   "homepage": "https://earlyforge.ai",
@@ -28,5 +28,16 @@
   },
   "scripts": {
     "test": "phpunit"
-  }
+  },
+  "keywords": [
+    "earlyforge",
+    "trends",
+    "trend-detection",
+    "emerging-trends",
+    "news",
+    "newsroom",
+    "journalism",
+    "editorial-intelligence",
+    "api-client"
+  ]
 }

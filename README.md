@@ -1,11 +1,13 @@
 # earlyforge/earlyforge-sdk
 
+EarlyForge is an AI-powered editorial intelligence platform that detects emerging trends across thousands of sources in 50 countries and turns them into original, sourced articles. This package gives you its trend data from code: see [earlyforge.ai/developers](https://earlyforge.ai/developers).
+
 PHP client for the **EarlyForge Trends API**, with two tiers under the
 same `/v1/api/trends/*` prefix:
 
 - **Pulse mirror** — free on every account, no plan required. An
   authenticated mirror of the free, anonymous trend data already shown on
-  [pulse.earlyforge.ai](https://pulse.earlyforge.ai): same daily snapshot,
+  [earlyforge.ai/pulse](https://earlyforge.ai/pulse): same daily snapshot,
   same trend count, same fields.
 - **Full trends feed** — every plan, including free, and **not "all
   trends unlocked."** Every plan reveals a daily, random,
